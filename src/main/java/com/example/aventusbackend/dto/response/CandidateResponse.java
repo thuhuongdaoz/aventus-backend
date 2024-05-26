@@ -1,6 +1,6 @@
 package com.example.aventusbackend.dto.response;
 
-import com.example.aventusbackend.entity.Role;
+import com.example.aventusbackend.entity.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,4 +17,14 @@ public class CandidateResponse {
     String email;
     String name;
     Role role;
+    LocalDate dateOfBirth;
+    String phoneNumber;
+    String avatar;
+    boolean isBlock;
+
+    String address;
+    Ward ward;
+    Major major;
+    Degree degree;
+    EnglishLevel englishLevel;
 }

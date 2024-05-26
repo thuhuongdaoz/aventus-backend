@@ -19,13 +19,15 @@ public class User {
     int id;
     String email;
     String password;
+    String name;
     @ManyToOne
     @JoinColumn(name="role_name", nullable=false)
     Role role;
 
-    String name;
+
     LocalDate dateOfBirth;
     String phoneNumber;
+    String avatar;
 
     boolean isBlock;
 }

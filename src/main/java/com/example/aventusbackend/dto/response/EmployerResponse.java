@@ -5,6 +5,8 @@ import com.example.aventusbackend.entity.Ward;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,8 +17,13 @@ public class EmployerResponse {
     String email;
     String name;
     Role role;
+    LocalDate dateOfBirth;
+    String phoneNumber;
+    String avatar;
+    boolean isBlock;
 
     String companyName;
-    String address;
     Ward ward;
+    String address;
+    String picture;
 }

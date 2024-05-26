@@ -1,10 +1,13 @@
 package com.example.aventusbackend.dto.request;
 
+import com.example.aventusbackend.validator.DobConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
 
 
 @Data
@@ -12,12 +15,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-    @Email(message = "INVALID_EMAIL", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    @NotEmpty(message = "EMPTY_EMAIL")
-    String email;
 
-    @NotEmpty(message = "EMPTY_PASSWORD")
-    String password;
-    @NotEmpty(message = "EMPTY_NAME")
-    String name;
+
+    @DobConstraint(message = "INVALID_DOB")
+    LocalDate dateOfBirth;
+    String phoneNumber;
+
 }

@@ -14,13 +14,14 @@ import lombok.experimental.FieldDefaults;
 @Entity
 public class Employer extends User {
     String companyName;
-    String address;
-
     @ManyToOne
     @JoinColumn(name="ward_code")
     Ward ward;
+    String address;
 
-    String pictureUrl;
+
+
+    String picture;
 
 
 

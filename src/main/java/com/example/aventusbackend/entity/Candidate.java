@@ -16,18 +16,24 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Candidate extends User {
-    String avatar;
-    String address;
     @ManyToOne
     @JoinColumn(name="ward_code")
     Ward ward;
+
+    String address;
+
 
     @ManyToOne
     @JoinColumn(name="major_id")
     Major major;
 
-    int degree;
-    double englishLevel;
+    @ManyToOne
+    @JoinColumn(name="degree_id")
+    Degree degree;
+
+    @ManyToOne
+    @JoinColumn(name="english_level_id")
+    EnglishLevel englishLevel;
 
 
 
