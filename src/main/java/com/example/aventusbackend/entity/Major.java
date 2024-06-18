@@ -1,11 +1,11 @@
 package com.example.aventusbackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,9 +16,13 @@ import lombok.experimental.FieldDefaults;
 @Entity
 public class Major {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
-//    @ManyToOne
+    //    @ManyToOne
 //    @JoinColumn(name="major_group_id")
 //    MajorGroup majorGroup;
+    @OneToMany(mappedBy = "major")
+    @JsonManagedReference
+    Set<MajorCareer> majorCareers;
 }

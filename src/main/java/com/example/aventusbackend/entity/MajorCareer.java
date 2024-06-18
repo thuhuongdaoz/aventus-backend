@@ -1,11 +1,9 @@
 package com.example.aventusbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -14,13 +12,20 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Career {
+public class MajorCareer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String name;
+    Integer id;
 
-    @OneToMany(mappedBy = "career")
-    @JsonManagedReference
-    Set<MajorCareer> majorCareers;
+    @ManyToOne
+    @JoinColumn(name = "major_id")
+    @JsonBackReference
+    Major major;
+
+    @ManyToOne
+    @JoinColumn(name = "career_id")
+    @JsonBackReference
+    Career career;
+
+    double point;
 }

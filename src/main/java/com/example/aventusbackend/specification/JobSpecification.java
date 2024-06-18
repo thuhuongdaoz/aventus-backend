@@ -3,6 +3,8 @@ package com.example.aventusbackend.specification;
 import com.example.aventusbackend.entity.Job;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
+
 public class JobSpecification {
     public static Specification<Job> hasEmployerId(Integer employerId) {
         return (root, query, criteriaBuilder) ->
@@ -32,6 +34,10 @@ public class JobSpecification {
                         criteriaBuilder.lessThanOrEqualTo(root.get("minOffer"), offer),
                         criteriaBuilder.greaterThanOrEqualTo(root.get("maxOffer"), offer)
                 );
+    }
+    public static Specification<Job> isNotExpired() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
     }
 
 

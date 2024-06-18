@@ -34,6 +34,10 @@ public enum ErrorCode {
     EMPTY_JOB_BENEFIT(1025, "Quyền lợi không được để trống", HttpStatus.BAD_REQUEST),
     INVALID_DEADLINE(1026, "Hạn nộp hồ sơ không hợp lệ", HttpStatus.BAD_REQUEST),
     JOB_NOT_EXISTED(1027, "Việc làm không tồn tại", HttpStatus.NOT_FOUND),
+    NULL_MAJOR(1028, "Chuyên ngành không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_DEGREE(1028, "Bằng cấp không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_EXPERIENCE(1029, "Kinh nghiệm không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_EXPECTED_OFFER(1030, "Mức lương mong muốn không được để trống", HttpStatus.BAD_REQUEST),
 
 
     ;
