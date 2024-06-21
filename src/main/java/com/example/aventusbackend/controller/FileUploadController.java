@@ -85,6 +85,30 @@ public class FileUploadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
     }
+    @PostMapping("/cv")
+    public ResponseEntity<String> uploadCV(@RequestParam("file") MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+            }
+            String subdir = "cv/";
+            // Create the directory if it does not exist
+            Path subdirPath = Paths.get(uploadDir + subdir);
+            if (!Files.exists(subdirPath)) {
+                Files.createDirectories(subdirPath);
+            }
+            String filename = file.getOriginalFilename();
+            Path path = Paths.get(uploadDir + subdir + filename);
+
+
+            Files.write(path, file.getBytes());
+
+            String fileUrl = "/upload/cv/" + filename;
+            return ResponseEntity.status(HttpStatus.OK).body(fileUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+        }
+    }
 
 
 }

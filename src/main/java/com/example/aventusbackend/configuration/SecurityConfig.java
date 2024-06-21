@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final String[] POST_PUBLIC_ENDPOINTS = {"/candidates", "/employers",
             "/auth/login", "/auth/introspect"
     };
-    private final String[] PUBLIC_ENDPOINTS = { "/wards", "/districts", "/provinces", "/majors", "/degrees","/englishLevels", "/careers", "/upload/**"
+    private final String[] PUBLIC_ENDPOINTS = { "/wards", "/districts", "/provinces", "/majors", "/degrees","/englishLevels", "/careers", "/upload/**", "/roles"
     };
 
     @Value("${jwt.signerKey}")

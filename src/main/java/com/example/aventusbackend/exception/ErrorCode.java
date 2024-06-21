@@ -38,6 +38,11 @@ public enum ErrorCode {
     NULL_DEGREE(1028, "Bằng cấp không được để trống", HttpStatus.BAD_REQUEST),
     NULL_EXPERIENCE(1029, "Kinh nghiệm không được để trống", HttpStatus.BAD_REQUEST),
     NULL_EXPECTED_OFFER(1030, "Mức lương mong muốn không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_JOB(1031, "Việc làm không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_ENGLISH_LEVEL(1032, "Trình dộ tiếng Anh không được để trống", HttpStatus.BAD_REQUEST),
+    EMPTY_RESUME(1033, "CV không được để trống", HttpStatus.BAD_REQUEST),
+    APPLY_NOT_EXISTED(1034, "Hồ sơ ứng viên không tồn tại", HttpStatus.NOT_FOUND),
+    NULL_STATUS(1035, "Trạng thái không được để trống", HttpStatus.NOT_FOUND),
 
 
     ;

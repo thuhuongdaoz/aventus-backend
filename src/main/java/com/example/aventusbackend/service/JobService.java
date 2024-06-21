@@ -3,6 +3,7 @@ package com.example.aventusbackend.service;
 import com.example.aventusbackend.dto.request.JobRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
 import com.example.aventusbackend.dto.response.JobResponse;
+import com.example.aventusbackend.entity.Candidate;
 import com.example.aventusbackend.entity.Employer;
 import com.example.aventusbackend.entity.Job;
 import com.example.aventusbackend.entity.MajorCareer;
@@ -19,10 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +32,9 @@ public class JobService {
     CareerRepository careerRepository;
     DegreeRepository degreeRepository;
     WardRepository wardRepository;
+    CandidateRepository candidateRepository;
+    ApplyRepository applyRepository;
+
     JobMapper jobMapper;
 
     public List<Job> search(Integer employerId, String name, Integer careerId, Integer degreeId, Integer experience, Integer offer) {
@@ -69,13 +70,16 @@ public class JobService {
 
 
             // tieu chi bang cap
-//            Nếu x >= y thì f = 1,
-//            ngược lại x < y thì f = 0;
+//            x(request) : bằng cấp của ứng viên
+//            y : yêu cầu bằng cấp của việc làm
+//            Nếu x >= y thì f = 1, ngược lại x < y thì f = 0;
             if (request.getDegreeId() >= job.getDegree().getId()) job.getPoint()[1] = 1;
             sqrtSquaredSum[1] = sqrtSquaredSum[1] + job.getPoint()[1] * job.getPoint()[1];
+
             // tieu chi kinh nghiem
-//            Nếu x>= y thì f = 1,
-//            ngược lại x < y thì f = x/5y;
+//            x(request) : kinh nghiệm của ứng viên
+//            y : yêu cầu kinh nghiệm của việc làm
+//            Nếu x>= y thì f = 1, ngược lại x < y thì f = x/5y;
             if (request.getExperience() >= job.getExperience()) job.getPoint()[2] = 1;
             else job.getPoint()[2] = (double) request.getExperience() / (5 * job.getExperience());
             sqrtSquaredSum[2] = sqrtSquaredSum[2] + job.getPoint()[2] * job.getPoint()[2];
@@ -137,8 +141,9 @@ public class JobService {
     }
 
     public Job getById(Integer id) {
-        return jobRepository.findById(id)
+        return   jobRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.JOB_NOT_EXISTED));
+
     }
 
 

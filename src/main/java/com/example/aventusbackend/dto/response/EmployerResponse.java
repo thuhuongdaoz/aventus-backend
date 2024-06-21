@@ -20,7 +20,7 @@ public class EmployerResponse {
     LocalDate dateOfBirth;
     String phoneNumber;
     String avatar;
-    boolean isBlock;
+    int status;
 
     String companyName;
     Ward ward;

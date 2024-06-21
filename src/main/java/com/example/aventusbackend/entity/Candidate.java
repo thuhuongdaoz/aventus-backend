@@ -1,5 +1,7 @@
 package com.example.aventusbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -31,9 +33,17 @@ public class Candidate extends User {
     @JoinColumn(name="degree_id")
     Degree degree;
 
+    int experience;
+
     @ManyToOne
     @JoinColumn(name="english_level_id")
     EnglishLevel englishLevel;
+
+    @OneToMany(mappedBy = "candidate")
+//    @JsonManagedReference
+    @JsonIgnore
+    Set<Apply> applies;
+
 
 
 

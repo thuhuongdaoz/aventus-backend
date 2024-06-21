@@ -1,9 +1,11 @@
 package com.example.aventusbackend.controller;
 
+import com.example.aventusbackend.dto.request.ApplyRequest;
 import com.example.aventusbackend.dto.request.CandidateCreateRequest;
 import com.example.aventusbackend.dto.request.CandidateUpdateRequest;
 import com.example.aventusbackend.dto.response.CandidateResponse;
 import com.example.aventusbackend.dto.response.UserResponse;
+import com.example.aventusbackend.entity.Apply;
 import com.example.aventusbackend.service.CandidateService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -32,6 +34,11 @@ public class CandidateController {
     @PutMapping("/myInfo")
     CandidateResponse updateMyInfo(@RequestBody @Valid CandidateUpdateRequest request){
         return candidateService.updateMyInfo(request);
+
+    }
+    @PostMapping("/apply")
+    Apply apply(@RequestBody @Valid ApplyRequest request){
+        return candidateService.apply(request);
 
     }
 

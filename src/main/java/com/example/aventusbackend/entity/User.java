@@ -29,5 +29,5 @@ public class User {
     String phoneNumber;
     String avatar;
 
-    boolean isBlock;
+    int status;
 }

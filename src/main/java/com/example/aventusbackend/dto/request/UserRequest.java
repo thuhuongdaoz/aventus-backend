@@ -15,10 +15,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
-
+    @NotEmpty(message = "EMPTY_NAME")
+    String name;
 
     @DobConstraint(message = "INVALID_DOB")
     LocalDate dateOfBirth;
     String phoneNumber;
+    String avatar;
 
 }

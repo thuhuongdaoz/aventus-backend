@@ -1,18 +1,15 @@
 package com.example.aventusbackend.repository;
 
 
+import com.example.aventusbackend.entity.Apply;
 import com.example.aventusbackend.entity.Job;
-import com.example.aventusbackend.entity.Role;
-import com.example.aventusbackend.entity.User;
+import com.example.aventusbackend.entity.Major;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
-    Optional<User> findByEmail(String email);
-
+public interface ApplyRepository extends JpaRepository<Apply, Integer> , JpaSpecificationExecutor<Apply> {
+    boolean existsByCandidateIdAndJobId(Integer candidateId, Integer jobId);
 }

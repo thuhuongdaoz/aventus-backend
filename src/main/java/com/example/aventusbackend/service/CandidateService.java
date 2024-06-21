@@ -1,11 +1,14 @@
 package com.example.aventusbackend.service;
 
+import com.example.aventusbackend.dto.request.ApplyRequest;
 import com.example.aventusbackend.dto.request.CandidateCreateRequest;
 import com.example.aventusbackend.dto.request.CandidateUpdateRequest;
 import com.example.aventusbackend.dto.response.CandidateResponse;
+import com.example.aventusbackend.entity.Apply;
 import com.example.aventusbackend.entity.Candidate;
 import com.example.aventusbackend.exception.AppException;
 import com.example.aventusbackend.exception.ErrorCode;
+import com.example.aventusbackend.mapper.ApplyMapper;
 import com.example.aventusbackend.mapper.CandidateMapper;
 import com.example.aventusbackend.enums.Role;
 import com.example.aventusbackend.repository.*;
@@ -24,14 +27,17 @@ import java.util.HashSet;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class CandidateService {
+    private final JobRepository jobRepository;
     CandidateRepository candidateRepository;
     RoleRepository roleRepository;
     WardRepository wardRepository;
     MajorRepository majorRepository;
     DegreeRepository degreeRepository;
     EnglishLevelRepository englishLevelRepository;
+    ApplyRepository applyRepository;
 
     CandidateMapper candidateMapper;
+    ApplyMapper applyMapper;
     PasswordEncoder passwordEncoder;
 
 
@@ -95,5 +101,31 @@ public class CandidateService {
         }
 
         return candidateMapper.toCandidateResponse(candidateRepository.save(candidate));
+    }
+    public Apply apply( ApplyRequest request) {
+        var context = SecurityContextHolder.getContext();
+        String email = context.getAuthentication().getName();
+
+        Candidate candidate = candidateRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Apply apply = applyMapper.toApply(request);
+        apply.setCandidate(candidate);
+        var job = jobRepository.findById(request.getJobId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setJob(job);
+        var major = majorRepository.findById(request.getMajorId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setMajor(major);
+        var degree = degreeRepository.findById(request.getDegreeId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setDegree(degree);
+        var englishLevel = englishLevelRepository.findById(request.getEnglishLevelId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setEnglishLevel(englishLevel);
+
+        apply.setStatus(1);
+
+
+        return applyRepository.save(apply);
     }
 }
