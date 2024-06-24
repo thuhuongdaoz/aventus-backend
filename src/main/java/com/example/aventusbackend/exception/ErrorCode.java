@@ -43,6 +43,7 @@ public enum ErrorCode {
     EMPTY_RESUME(1033, "CV không được để trống", HttpStatus.BAD_REQUEST),
     APPLY_NOT_EXISTED(1034, "Hồ sơ ứng viên không tồn tại", HttpStatus.NOT_FOUND),
     NULL_STATUS(1035, "Trạng thái không được để trống", HttpStatus.NOT_FOUND),
+    USER_LOCKED(1036, "Tài khoản này đã bị khoá", HttpStatus.NOT_FOUND),
 
 
     ;

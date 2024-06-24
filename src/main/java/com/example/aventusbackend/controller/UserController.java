@@ -2,6 +2,7 @@ package com.example.aventusbackend.controller;
 
 import com.example.aventusbackend.dto.request.CandidateUpdateRequest;
 import com.example.aventusbackend.dto.request.ChangePasswordRequest;
+import com.example.aventusbackend.dto.request.ChangeStatusRequest;
 import com.example.aventusbackend.dto.request.UserRequest;
 import com.example.aventusbackend.dto.response.CandidateResponse;
 import com.example.aventusbackend.dto.response.ChangePasswordResponse;
@@ -49,6 +50,10 @@ public class UserController {
     UserResponse updateMyInfo(@RequestBody @Valid UserRequest request){
         return userService.updateMyInfo(request);
 
+    }
+    @PostMapping("/{userId}/changeStatus")
+    boolean changeStatus(@PathVariable("userId") Integer userId){
+        return userService.changeStatus(userId);
     }
 
 

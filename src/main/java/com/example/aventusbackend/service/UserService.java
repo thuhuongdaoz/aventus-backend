@@ -2,10 +2,12 @@ package com.example.aventusbackend.service;
 
 import com.example.aventusbackend.dto.request.CandidateUpdateRequest;
 import com.example.aventusbackend.dto.request.ChangePasswordRequest;
+import com.example.aventusbackend.dto.request.ChangeStatusRequest;
 import com.example.aventusbackend.dto.request.UserRequest;
 import com.example.aventusbackend.dto.response.CandidateResponse;
 import com.example.aventusbackend.dto.response.ChangePasswordResponse;
 import com.example.aventusbackend.dto.response.UserResponse;
+import com.example.aventusbackend.entity.Apply;
 import com.example.aventusbackend.entity.Candidate;
 import com.example.aventusbackend.entity.Job;
 import com.example.aventusbackend.entity.User;
@@ -108,5 +110,14 @@ public class UserService {
 
 
         return userMapper.toUserResponse(userRepository.save(user));
+    }
+    public boolean changeStatus(Integer id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setStatus(1 - user.getStatus());
+        userRepository.save(user);
+        return true;
+
+
     }
 }
