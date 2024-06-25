@@ -29,8 +29,10 @@ public class ApplyResponse {
     String resume;
 
     int status;
-
-    double[] point;
+    double[] originPoint;
+    double[] normalPoint;
+    double[] weightPoint;
+//    double[] point;
     double distanceBest;
     double distanceWorst;
     double p;

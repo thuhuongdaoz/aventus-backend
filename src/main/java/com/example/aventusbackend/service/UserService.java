@@ -111,6 +111,7 @@ public class UserService {
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean changeStatus(Integer id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));

@@ -5,6 +5,7 @@ import com.example.aventusbackend.dto.request.TopsisSearchApplyRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
 import com.example.aventusbackend.dto.response.ApplyResponse;
 import com.example.aventusbackend.dto.response.JobResponse;
+import com.example.aventusbackend.dto.response.TopsisSearchApplyResponse;
 import com.example.aventusbackend.dto.response.WardResponse;
 import com.example.aventusbackend.entity.Apply;
 import com.example.aventusbackend.entity.Job;
@@ -35,6 +36,7 @@ public class ApplyController {
 
     @GetMapping
     List<Apply> search(@RequestParam(required = false) Integer employerId,
+                       @RequestParam(required = false) Integer jobId,
                        @RequestParam(required = false) String name,
                        @RequestParam(required = false) Integer majorId,
                        @RequestParam(required = false) Integer degreeId,
@@ -42,11 +44,11 @@ public class ApplyController {
                        @RequestParam(required = false) Integer englishLevelId,
                        @RequestParam(required = false) Integer applicationStatus){
 
-        return applyService.search(employerId, name, majorId, degreeId, experience, englishLevelId, applicationStatus);
+        return applyService.search(employerId, jobId, name, majorId, degreeId, experience, englishLevelId, applicationStatus);
 
     }
     @PostMapping("/topsisSearch")
-    List<ApplyResponse> topsisSearch(@RequestBody @Valid TopsisSearchApplyRequest request){
+    TopsisSearchApplyResponse topsisSearch(@RequestBody @Valid TopsisSearchApplyRequest request){
         return applyService.topsisSearch(request);
     }
     @GetMapping("/{applyId}")

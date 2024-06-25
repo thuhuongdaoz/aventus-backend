@@ -5,6 +5,7 @@ import com.example.aventusbackend.dto.request.JobRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
 import com.example.aventusbackend.dto.response.CandidateResponse;
 import com.example.aventusbackend.dto.response.JobResponse;
+import com.example.aventusbackend.dto.response.TopsisSearchJobResponse;
 import com.example.aventusbackend.entity.Degree;
 import com.example.aventusbackend.entity.Job;
 import com.example.aventusbackend.service.DegreeService;
@@ -39,7 +40,7 @@ public class JobController {
         return jobService.search(employerId, name, careerId, degreeId, experience, offer);
     }
     @PostMapping("/topsisSearch")
-    List<JobResponse> topsisSearch(@RequestBody @Valid TopsisSearchJobRequest request){
+    TopsisSearchJobResponse topsisSearch(@RequestBody @Valid TopsisSearchJobRequest request){
         return jobService.topsisSearch(request);
     }
     @GetMapping("/{jobId}")

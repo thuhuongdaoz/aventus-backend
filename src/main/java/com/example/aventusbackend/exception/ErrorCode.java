@@ -44,7 +44,11 @@ public enum ErrorCode {
     APPLY_NOT_EXISTED(1034, "Hồ sơ ứng viên không tồn tại", HttpStatus.NOT_FOUND),
     NULL_STATUS(1035, "Trạng thái không được để trống", HttpStatus.NOT_FOUND),
     USER_LOCKED(1036, "Tài khoản này đã bị khoá", HttpStatus.NOT_FOUND),
-
+    NULL_MAJOR_WEIGHT(1039, "Trọng số chuyên ngành không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_DEGREE_WEIGHT(1040, "Trọng số bằng cấp không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_EXPERIENCE_WEIGHT(1041, "Trọng số kinh nghiệm không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_OFFER_WEIGHT(1042, "Trọng số mức lương không được để trống", HttpStatus.BAD_REQUEST),
+    NULL_CAREER_WEIGHT(1043, "Trọng số ngành nghề không được để trống", HttpStatus.BAD_REQUEST),
 
     ;
 

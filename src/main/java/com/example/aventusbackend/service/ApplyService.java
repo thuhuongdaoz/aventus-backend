@@ -3,9 +3,7 @@ package com.example.aventusbackend.service;
 import com.example.aventusbackend.dto.request.ChangeStatusRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchApplyRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
-import com.example.aventusbackend.dto.response.ApplyResponse;
-import com.example.aventusbackend.dto.response.JobResponse;
-import com.example.aventusbackend.dto.response.WardResponse;
+import com.example.aventusbackend.dto.response.*;
 import com.example.aventusbackend.entity.*;
 import com.example.aventusbackend.exception.AppException;
 import com.example.aventusbackend.exception.ErrorCode;
@@ -40,8 +38,9 @@ public class ApplyService {
         return applyRepository.existsByCandidateIdAndJobId(candidateId, jobId);
     }
 
-    public List<Apply> search(Integer employerId, String name, Integer majorId, Integer degreeId, Integer experience, Integer englishLevelId, Integer applicationStatus) {
+    public List<Apply> search(Integer employerId, Integer jobId,  String name, Integer majorId, Integer degreeId, Integer experience, Integer englishLevelId, Integer applicationStatus) {
         Specification<Apply> spec = Specification.where(ApplySpecification.hasEmployerId(employerId))
+                .and(ApplySpecification.hasJobId(jobId))
                 .and(ApplySpecification.hasName(name))
                 .and(ApplySpecification.hasMajorId(majorId))
                 .and(ApplySpecification.hasDegreeId(degreeId))
@@ -52,38 +51,44 @@ public class ApplyService {
         return applyRepository.findAll(spec);
 
     }
-    public List<ApplyResponse> topsisSearch(TopsisSearchApplyRequest request) {
-        List<ApplyResponse> applies = new ArrayList<>(applyRepository.findAll().stream().map(applyMapper::toApplyResponse).toList());
+    public TopsisSearchApplyResponse topsisSearch(TopsisSearchApplyRequest request) {
+        Specification<Apply> spec = Specification.where(ApplySpecification.hasEmployerId(request.getEmployerId()))
+                .and(ApplySpecification.hasJobId(request.getJobId()));
+
+        List<ApplyResponse> applies = new ArrayList<>(applyRepository.findAll(spec).stream().map(applyMapper::toApplyResponse).toList());
 
         //Xây dựng ma trận quyết định
         double[] sqrtSquaredSum = new double[3];
         for (ApplyResponse apply : applies) {
-            apply.setPoint(new double[3]);
+            apply.setOriginPoint(new double[3]);
+            apply.setNormalPoint(new double[3]);
+            apply.setWeightPoint(new double[3]);
+//            apply.setPoint(new double[3]);
 
             // tieu chi nganh nghe
             for (MajorCareer majorCareer : apply.getMajor().getMajorCareers()) {
                 if (majorCareer.getCareer().getId() == request.getCareerId()) {
-                    apply.getPoint()[0] = majorCareer.getPoint();
+                    apply.getOriginPoint()[0] = majorCareer.getPoint();
                     break;
                 }
             }
-            sqrtSquaredSum[0] = sqrtSquaredSum[0] + apply.getPoint()[0] * apply.getPoint()[0];
+            sqrtSquaredSum[0] = sqrtSquaredSum[0] + apply.getOriginPoint()[0] * apply.getOriginPoint()[0];
 
 
             // tieu chi bang cap
 //            x : bằng cấp của ứng viên
 //            y(request) : yêu cầu bằng cấp của nhà tuyển dụng
 //            Nếu x >= y thì f = 1, ngược lại x < y thì f = 0;
-            if (apply.getDegree().getId() >= request.getDegreeId()) apply.getPoint()[1] = 1;
-            sqrtSquaredSum[1] = sqrtSquaredSum[1] + apply.getPoint()[1] * apply.getPoint()[1];
+            if (apply.getDegree().getId() >= request.getDegreeId()) apply.getOriginPoint()[1] = 1;
+            sqrtSquaredSum[1] = sqrtSquaredSum[1] + apply.getOriginPoint()[1] * apply.getOriginPoint()[1];
 
             // tieu chi kinh nghiem
 //            x : kinh nghiệm của ứng viên
 //            y(request) : yêu cầu kinh nghiệm của nhà tuyển dụng
 //            Nếu x>= y thì f = 1, ngược lại x < y thì f = x/5y;
-            if (apply.getExperience() >= request.getExperience()) apply.getPoint()[2] = 1;
-            else apply.getPoint()[2] = (double) apply.getExperience() / (5 * request.getExperience() );
-            sqrtSquaredSum[2] = sqrtSquaredSum[2] + apply.getPoint()[2] * apply.getPoint()[2];
+            if (apply.getExperience() >= request.getExperience()) apply.getOriginPoint()[2] = 1;
+            else apply.getOriginPoint()[2] = (double) apply.getExperience() / (5 * request.getExperience() );
+            sqrtSquaredSum[2] = sqrtSquaredSum[2] + apply.getOriginPoint()[2] * apply.getOriginPoint()[2];
         }
         for (int j = 0; j < 3; j++)
             sqrtSquaredSum[j] = Math.sqrt(sqrtSquaredSum[j]);
@@ -92,18 +97,28 @@ public class ApplyService {
         for (int j = 0; j < 3; j++) {
             if (sqrtSquaredSum[j] != 0) {
                 for (ApplyResponse apply : applies) {
-                    apply.getPoint()[j] = apply.getPoint()[j] / sqrtSquaredSum[j];
+                    apply.getNormalPoint()[j] = apply.getOriginPoint()[j] / sqrtSquaredSum[j];
                 }
             }
         }
-        // Tạo ma trận trọng số chuẩn hóa va Xác định giải pháp lý tưởng tốt nhất (A*) và giải pháp lý tưởng tệ nhất (A-)
+        // Tạo ma trận trọng số chuẩn hóa
+        double[] weight = new double[3];
+        int totalWeight = request.getCareerWeight() + request.getDegreeWeight() + request.getExperienceWeight();
+        weight[0] = (double)request.getCareerWeight() / totalWeight;
+        weight[1] = (double)request.getDegreeWeight() / totalWeight;
+        weight[2] = (double)request.getExperienceWeight() / totalWeight;
+        for (int j = 0; j < 3; j++) {
+            for (ApplyResponse apply : applies) {
+                apply.getWeightPoint()[j] = apply.getNormalPoint()[j] * weight[j];
+            }
+        }
+        // Xác định giải pháp lý tưởng tốt nhất (A*) và giải pháp lý tưởng tệ nhất (A-)
         double[] bestSolution = new double[3];
         double[] worstSolution = {1, 1, 1};
         for (int j = 0; j < 3; j++) {
             for (ApplyResponse apply : applies) {
-                apply.getPoint()[j] = apply.getPoint()[j] * 0.25;
-                bestSolution[j] = Math.max(bestSolution[j], apply.getPoint()[j]);
-                worstSolution[j] = Math.min(worstSolution[j], apply.getPoint()[j]);
+                bestSolution[j] = Math.max(bestSolution[j], apply.getWeightPoint()[j]);
+                worstSolution[j] = Math.min(worstSolution[j], apply.getWeightPoint()[j]);
             }
         }
         //Tính khoảng cách đến giải pháp lý tưởng tốt nhất và tệ nhất
@@ -112,22 +127,28 @@ public class ApplyService {
             double squareSumBest = 0;
             double squareSumWorst = 0;
             for (int j = 0; j < 3; j++) {
-                squareSumBest += (apply.getPoint()[j] - bestSolution[j]) * (apply.getPoint()[j] - bestSolution[j]);
-                squareSumWorst += (apply.getPoint()[j] - worstSolution[j]) * (apply.getPoint()[j] - worstSolution[j]);
+                squareSumBest += (apply.getWeightPoint()[j] - bestSolution[j]) * (apply.getWeightPoint()[j] - bestSolution[j]);
+                squareSumWorst += (apply.getWeightPoint()[j] - worstSolution[j]) * (apply.getWeightPoint()[j] - worstSolution[j]);
             }
             apply.setDistanceBest(Math.sqrt(squareSumBest));
             apply.setDistanceWorst(Math.sqrt(squareSumWorst));
-            apply.setP(apply.getDistanceWorst()/ (apply.getDistanceBest() + apply.getDistanceWorst()));
+            if(apply.getDistanceBest() + apply.getDistanceWorst() != 0)
+                apply.setP(apply.getDistanceWorst()/ (apply.getDistanceBest() + apply.getDistanceWorst()));
+            else apply.setP(1);
         }
 
-        applies.sort(new Comparator<ApplyResponse>() {
-            @Override
-            public int compare(ApplyResponse j1, ApplyResponse j2) {
-                return Double.compare(j2.getP(), j1.getP());
-            }
-        });
-
-        return applies;
+//        applies.sort(new Comparator<ApplyResponse>() {
+//            @Override
+//            public int compare(ApplyResponse j1, ApplyResponse j2) {
+//                return Double.compare(j2.getP(), j1.getP());
+//            }
+//        });
+        TopsisSearchApplyResponse response = new TopsisSearchApplyResponse();
+        response.setApplies(applies);
+        response.setWeight(weight);
+        response.setBestSolution(bestSolution);
+        response.setWorstSolution(worstSolution);
+        return response;
     }
     public Apply getById(Integer id) {
         return   applyRepository.findById(id)

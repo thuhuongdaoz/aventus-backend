@@ -24,6 +24,15 @@ public class TopsisSearchJobRequest {
     Integer experience;
     @NotNull(message = "NULL_EXPECTED_OFFER")
     Integer expectedOffer;
+    @NotNull(message = "NULL_MAJOR_WEIGHT")
+    Integer majorWeight;
+    @NotNull(message = "NULL_DEGREE_WEIGHT")
+    Integer degreeWeight;
+    @NotNull(message = "NULL_EXPERIENCE_WEIGHT")
+    Integer experienceWeight;
+    @NotNull(message = "NULL_OFFER_WEIGHT")
+    Integer offerWeight;
+
 
 
 }

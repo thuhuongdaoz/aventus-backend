@@ -44,7 +44,10 @@ public class JobResponse {
     String address;
 
     LocalDate deadline;
-    double[] point;
+    double[] originPoint;
+    double[] normalPoint;
+    double[] weightPoint;
+//    double[] point;
     double distanceBest;
     double distanceWorst;
     double p;

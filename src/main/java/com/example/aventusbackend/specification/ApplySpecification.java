@@ -11,6 +11,10 @@ public class ApplySpecification {
         return (root, query, criteriaBuilder) ->
                 employerId == null ? null : criteriaBuilder.equal(root.get("job").get("employer").get("id"), employerId);
     }
+    public static Specification<Apply> hasJobId(Integer jobId) {
+        return (root, query, criteriaBuilder) ->
+                jobId == null ? null : criteriaBuilder.equal(root.get("job").get("id"), jobId);
+    }
     public static Specification<Apply> hasName(String name) {
         return (root, query, criteriaBuilder) ->
                 name == null ? null : criteriaBuilder.like(root.get("name"), "%" + name + "%");
