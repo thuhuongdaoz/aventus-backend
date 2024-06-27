@@ -1,5 +1,6 @@
 package com.example.aventusbackend.service;
 
+import com.example.aventusbackend.dto.request.ApplyRequest;
 import com.example.aventusbackend.dto.request.ChangeStatusRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchApplyRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
@@ -9,9 +10,7 @@ import com.example.aventusbackend.exception.AppException;
 import com.example.aventusbackend.exception.ErrorCode;
 import com.example.aventusbackend.mapper.ApplyMapper;
 import com.example.aventusbackend.mapper.WardMapper;
-import com.example.aventusbackend.repository.ApplyRepository;
-import com.example.aventusbackend.repository.DistrictRepository;
-import com.example.aventusbackend.repository.WardRepository;
+import com.example.aventusbackend.repository.*;
 import com.example.aventusbackend.specification.ApplySpecification;
 import com.example.aventusbackend.specification.JobSpecification;
 import lombok.AccessLevel;
@@ -19,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,13 +31,43 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplyService {
     ApplyRepository applyRepository;
+    CandidateRepository candidateRepository;
+    JobRepository jobRepository;
+    MajorRepository majorRepository;
+    DegreeRepository degreeRepository;
+    EnglishLevelRepository englishLevelRepository;
 
     ApplyMapper applyMapper;
 
     public boolean hasCandidateAppliedForJob(Integer candidateId, Integer jobId) {
         return applyRepository.existsByCandidateIdAndJobId(candidateId, jobId);
     }
+    public Apply apply( ApplyRequest request) {
+        var context = SecurityContextHolder.getContext();
+        String email = context.getAuthentication().getName();
 
+        Candidate candidate = candidateRepository.findByEmail(email).orElseThrow(
+                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Apply apply = applyMapper.toApply(request);
+        apply.setCandidate(candidate);
+        var job = jobRepository.findById(request.getJobId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setJob(job);
+        var major = majorRepository.findById(request.getMajorId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setMajor(major);
+        var degree = degreeRepository.findById(request.getDegreeId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setDegree(degree);
+        var englishLevel = englishLevelRepository.findById(request.getEnglishLevelId()).orElseThrow(
+                () -> new RuntimeException());
+        apply.setEnglishLevel(englishLevel);
+
+        apply.setStatus(1);
+
+
+        return applyRepository.save(apply);
+    }
     public List<Apply> search(Integer employerId, Integer jobId,  String name, Integer majorId, Integer degreeId, Integer experience, Integer englishLevelId, Integer applicationStatus) {
         Specification<Apply> spec = Specification.where(ApplySpecification.hasEmployerId(employerId))
                 .and(ApplySpecification.hasJobId(jobId))

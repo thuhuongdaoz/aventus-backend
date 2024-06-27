@@ -102,30 +102,30 @@ public class CandidateService {
 
         return candidateMapper.toCandidateResponse(candidateRepository.save(candidate));
     }
-    public Apply apply( ApplyRequest request) {
-        var context = SecurityContextHolder.getContext();
-        String email = context.getAuthentication().getName();
-
-        Candidate candidate = candidateRepository.findByEmail(email).orElseThrow(
-                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Apply apply = applyMapper.toApply(request);
-        apply.setCandidate(candidate);
-        var job = jobRepository.findById(request.getJobId()).orElseThrow(
-                () -> new RuntimeException());
-        apply.setJob(job);
-        var major = majorRepository.findById(request.getMajorId()).orElseThrow(
-                () -> new RuntimeException());
-        apply.setMajor(major);
-        var degree = degreeRepository.findById(request.getDegreeId()).orElseThrow(
-                () -> new RuntimeException());
-        apply.setDegree(degree);
-        var englishLevel = englishLevelRepository.findById(request.getEnglishLevelId()).orElseThrow(
-                () -> new RuntimeException());
-        apply.setEnglishLevel(englishLevel);
-
-        apply.setStatus(1);
-
-
-        return applyRepository.save(apply);
-    }
+//    public Apply apply( ApplyRequest request) {
+//        var context = SecurityContextHolder.getContext();
+//        String email = context.getAuthentication().getName();
+//
+//        Candidate candidate = candidateRepository.findByEmail(email).orElseThrow(
+//                () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+//        Apply apply = applyMapper.toApply(request);
+//        apply.setCandidate(candidate);
+//        var job = jobRepository.findById(request.getJobId()).orElseThrow(
+//                () -> new RuntimeException());
+//        apply.setJob(job);
+//        var major = majorRepository.findById(request.getMajorId()).orElseThrow(
+//                () -> new RuntimeException());
+//        apply.setMajor(major);
+//        var degree = degreeRepository.findById(request.getDegreeId()).orElseThrow(
+//                () -> new RuntimeException());
+//        apply.setDegree(degree);
+//        var englishLevel = englishLevelRepository.findById(request.getEnglishLevelId()).orElseThrow(
+//                () -> new RuntimeException());
+//        apply.setEnglishLevel(englishLevel);
+//
+//        apply.setStatus(1);
+//
+//
+//        return applyRepository.save(apply);
+//    }
 }

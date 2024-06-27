@@ -26,6 +26,6 @@ public class CandidateResponse {
     Ward ward;
     Major major;
     Degree degree;
-    int experience;
+    Integer experience;
     EnglishLevel englishLevel;
 }

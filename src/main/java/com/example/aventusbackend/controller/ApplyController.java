@@ -1,5 +1,6 @@
 package com.example.aventusbackend.controller;
 
+import com.example.aventusbackend.dto.request.ApplyRequest;
 import com.example.aventusbackend.dto.request.ChangeStatusRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchApplyRequest;
 import com.example.aventusbackend.dto.request.TopsisSearchJobRequest;
@@ -59,5 +60,10 @@ public class ApplyController {
     @PostMapping("/{applyId}/changeStatus")
     boolean changeStatus(@PathVariable("applyId") Integer applyId, @RequestBody @Valid ChangeStatusRequest request){
         return applyService.changeStatus(applyId, request);
+    }
+    @PostMapping("/apply")
+    Apply apply(@RequestBody @Valid ApplyRequest request){
+        return applyService.apply(request);
+
     }
 }

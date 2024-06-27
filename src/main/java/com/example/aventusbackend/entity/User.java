@@ -27,7 +27,7 @@ public class User {
 
     LocalDate dateOfBirth;
     String phoneNumber;
-    String avatar;     
+    String avatar;
 
     int status;
 }

@@ -33,7 +33,7 @@ public class Candidate extends User {
     @JoinColumn(name="degree_id")
     Degree degree;
 
-    int experience;
+    Integer experience;
 
     @ManyToOne
     @JoinColumn(name="english_level_id")

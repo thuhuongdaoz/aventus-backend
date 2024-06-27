@@ -36,11 +36,11 @@ public class CandidateController {
         return candidateService.updateMyInfo(request);
 
     }
-    @PostMapping("/apply")
-    Apply apply(@RequestBody @Valid ApplyRequest request){
-        return candidateService.apply(request);
-
-    }
+//    @PostMapping("/apply")
+//    Apply apply(@RequestBody @Valid ApplyRequest request){
+//        return candidateService.apply(request);
+//
+//    }
 
 
 }
